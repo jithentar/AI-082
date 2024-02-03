@@ -1,0 +1,35 @@
+o check conditions:
+def unify(x, y, theta):
+    """
+    Unify the two expressions x and y with the given substitution theta.
+    """
+    if theta is None:
+        return None
+    elif x == y:
+        return theta
+    elif isinstance(x, str) and is_variable(x):
+        return unify_var(x, y, theta)
+    elif isinstance(y, str) and is_variable(y):
+        return unify_var(y, x, theta)
+    elif isinstance(x, list) and isinstance(y, list):
+        if len(x) != len(y):
+            return None
+        else:
+            return unify(x[1:], y[1:], unify(x[0], y[0], theta))
+    else:
+        return None
+
+to unify the variables:
+def unify_var(var, x, theta):
+    """
+    Unify a variable var with the expression x using the given substitution theta.
+    """
+    if var in theta:
+        return unify(theta[var], x, theta)
+    elif x in theta:
+        return unify(var, theta[x], theta)
+    elif occurs_check(var, x, theta):
+        return None
+    else:
+        theta[var] = x
+        return theta
